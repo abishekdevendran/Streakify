@@ -1,4 +1,14 @@
-import { pgTable, text, integer, timestamp, boolean } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
+import {
+	pgTable,
+	text,
+	integer,
+	timestamp,
+	boolean,
+	serial,
+	pgEnum,
+	json
+} from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
 	id: text('id').primaryKey(),
@@ -49,3 +59,53 @@ export const verification = pgTable('verification', {
 	createdAt: timestamp('created_at'),
 	updatedAt: timestamp('updated_at')
 });
+
+// frequency enum
+export const frequency = pgEnum('frequency', ['daily', 'weekly', 'monthly', 'custom']);
+
+export const habit = pgTable('habit', {
+	id: serial('id').primaryKey(),
+	userId: text('user_id').references(() => user.id),
+	name: text('name').notNull(),
+	description: text('description'),
+	frequency: frequency('frequency').notNull(),
+	count: integer('count').notNull(),
+});
+
+export const streak = pgTable('streak', {
+	id: serial('id').primaryKey(),
+	habitId: integer('habit_id').references(() => habit.id),
+	startDate: timestamp('start_date').notNull(),
+	endDate: timestamp('end_date').notNull(),
+	count: integer('count').notNull()
+});
+
+// relations
+export const userRelations = relations(user, ({one, many}) => ({
+	sessions: many(session),
+	account : one(account,{
+		fields: [user.id],
+		references: [account.userId]
+	})
+}));
+
+export const sessionRelations = relations(session, ({one, many}) => ({
+	user: one(user, {
+		fields: [session.userId],
+		references: [user.id]
+	})
+}));
+
+export const accountRelations = relations(account, ({one, many}) => ({
+	user: one(user, {
+		fields: [account.userId],
+		references: [user.id]
+	})
+}));
+
+export const habitRelations = relations(habit, ({one, many}) => ({
+	user: one(user, {
+		fields: [habit.userId],
+		references: [user.id]
+	})
+}));
