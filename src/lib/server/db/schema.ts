@@ -61,51 +61,65 @@ export const verification = pgTable('verification', {
 });
 
 // frequency enum
-export const frequency = pgEnum('frequency', ['daily', 'weekly', 'monthly', 'custom']);
+export const frequency = pgEnum('frequency', ['daily', 'weekly', 'monthly']);
 
 export const habit = pgTable('habit', {
 	id: serial('id').primaryKey(),
-	userId: text('user_id').references(() => user.id),
+	userId: text('user_id')
+		.references(() => user.id)
+		.notNull(),
 	name: text('name').notNull(),
 	description: text('description'),
 	frequency: frequency('frequency').notNull(),
-	count: integer('count').notNull(),
-});
-
-export const streak = pgTable('streak', {
-	id: serial('id').primaryKey(),
-	habitId: integer('habit_id').references(() => habit.id),
-	startDate: timestamp('start_date').notNull(),
-	endDate: timestamp('end_date').notNull(),
 	count: integer('count').notNull()
 });
 
+export const habitInstance = pgTable('habit_instance', {
+	id: serial('id').primaryKey(),
+	habitId: integer('habit_id')
+		.references(() => habit.id)
+		.notNull(),
+	date: timestamp('date').notNull()
+});
+
 // relations
-export const userRelations = relations(user, ({one, many}) => ({
+export const userRelations = relations(user, ({ one, many }) => ({
 	sessions: many(session),
-	account : one(account,{
+	account: one(account, {
 		fields: [user.id],
 		references: [account.userId]
 	})
 }));
 
-export const sessionRelations = relations(session, ({one, many}) => ({
+export const sessionRelations = relations(session, ({ one, many }) => ({
 	user: one(user, {
 		fields: [session.userId],
 		references: [user.id]
 	})
 }));
 
-export const accountRelations = relations(account, ({one, many}) => ({
+export const accountRelations = relations(account, ({ one, many }) => ({
 	user: one(user, {
 		fields: [account.userId],
 		references: [user.id]
 	})
 }));
 
-export const habitRelations = relations(habit, ({one, many}) => ({
+export const habitRelations = relations(habit, ({ one, many }) => ({
 	user: one(user, {
 		fields: [habit.userId],
 		references: [user.id]
+	}),
+	habitInstances: many(habitInstance)
+}));
+
+export const habitInstanceRelations = relations(habitInstance, ({ one, many }) => ({
+	habit: one(habit, {
+		fields: [habitInstance.habitId],
+		references: [habit.id]
 	})
 }));
+
+// types
+export type Habit = typeof habit.$inferSelect;
+export type HabitInstance = typeof habitInstance.$inferSelect;
