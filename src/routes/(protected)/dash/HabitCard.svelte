@@ -54,10 +54,10 @@
 	};
 </script>
 
-<div class="text-xl font-semibold">{habit.habitName}</div>
+<div class="text-xl font-semibold whitespace-nowrap overflow-hidden text-ellipsis">{habit.habitName}</div>
 <div class="flex gap-2 max-md:flex-col md:gap-4">
 	<!-- Progress count -->
-	<div class="text-center">
+	<div class="text-center whitespace-nowrap">
 		<span class="text-2xl font-bold">{habit.instances.length}</span>
 		<span class="text-muted-foreground">/{habit.habitCount}</span>
 	</div>

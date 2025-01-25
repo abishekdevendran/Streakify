@@ -14,8 +14,8 @@
 	<Dialog.Root bind:open>
 		<Dialog.Trigger>
 			{#snippet child({ props: triggerProps })}
-				<Button {...triggerProps} variant="outline">
-					<CalendarPlus2 />
+				<Button {...triggerProps} variant="outline" class="fixed aspect-square right-2 bottom-2 p-3 w-12 h-12">
+					<CalendarPlus2 size={64} class="!h-full !w-full"  />
 				</Button>
 			{/snippet}
 		</Dialog.Trigger>
@@ -34,8 +34,8 @@
 	<Drawer.Root bind:open shouldScaleBackground={true} autoFocus={true}>
 		<Drawer.Trigger>
 			{#snippet child({ props: triggerProps })}
-				<Button {...triggerProps} variant="outline">
-					<CalendarPlus2 />
+				<Button {...triggerProps} variant="outline" class="fixed aspect-square right-2 bottom-2 p-3 h-12 w-12">
+					<CalendarPlus2 size={64} class="!h-full !w-full" />
 				</Button>
 			{/snippet}
 		</Drawer.Trigger>

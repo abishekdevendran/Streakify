@@ -15,6 +15,6 @@
 </svelte:head>
 <ModeWatcher />
 <Toaster richColors={true} position={'top-right'} />
-<div class="relative flex min-h-screen flex-col bg-background container items-center" data-vaul-drawer-wrapper>
+<div class="relative flex min-h-screen flex-col bg-background items-center" data-vaul-drawer-wrapper>
 	{@render children()}
 </div>
