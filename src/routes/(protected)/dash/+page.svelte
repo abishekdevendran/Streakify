@@ -7,6 +7,7 @@
 	import Header from './Header.svelte';
 
 	let { data } = $props();
+	$inspect("user", data.user);
 	let habits = $state(data.habits);
 	$effect(() => {
 		habits = data.habits;

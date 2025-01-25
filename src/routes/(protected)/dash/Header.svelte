@@ -40,7 +40,7 @@
 				<CalendarCheck />
 			{/if}
 			<ThemeDropDown />
-			<Avatar />
+			<Avatar {imgSrc} {alt} />
 		</div>
 	</div>
 </header>
