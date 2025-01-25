@@ -100,7 +100,7 @@
 					</div>
 					<Input autocomplete="off" bind:value={confirmPassword} id="conf-password" type="password" required />
 				</div>
-				<Button type="submit" class="w-full"
+				<Button type="button" class="w-full"
 					onclick={handleSignup}
 				>Sign Up</Button>
 				<Button
