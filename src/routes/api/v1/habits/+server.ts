@@ -1,10 +1,9 @@
 import { db } from '$lib/server/db/index.js';
 import { error, json } from '@sveltejs/kit';
 import * as tables from '$lib/server/db/schema.js';
-import { habit, habitInstance } from '$lib/server/db/schema.js';
+import { habit, habitInstance, user } from '$lib/server/db/schema.js';
 import { z } from 'zod';
 import { and, eq, gte, or, sql } from 'drizzle-orm';
-import { lte } from 'drizzle-orm';
 
 // Create a new Habit
 const habitsPostSchema = z.object({
@@ -56,7 +55,7 @@ export const PATCH = async ({ locals, request }) => {
 	const resp = await db
 		.update(tables.habit)
 		.set(body.data)
-		.where(eq(tables.habit.id, body.data.id))
+		.where(and(eq(tables.habit.id, body.data.id), eq(tables.habit.userId, locals.user!.id)))
 		.returning()
 		.execute();
 
@@ -77,7 +76,9 @@ export const DELETE = async ({ locals, request }) => {
 	if (!body.success) {
 		return error(400, body.error);
 	}
-	await db.delete(tables.habit).where(eq(tables.habit.id, body.data.id)).execute();
+	await db.delete(tables.habit).where(and(eq(tables.habit.id, body.data.id),
+		eq(tables.habit.userId, locals.user!.id)
+	)).execute();
 
 	// Delete all HabitInstances for the Habit
 	await db
@@ -151,6 +152,7 @@ export const GET = async ({ locals }) => {
 			END`
 			)
 		)
+		.where(eq(habit.userId, locals.user!.id))
 		.groupBy(habit.id, habit.name, habit.description, habit.frequency, habit.count)
 		.orderBy(habit.id);
 
