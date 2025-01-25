@@ -1,8 +1,10 @@
 import { db } from '$lib/server/db/index.js';
 import { error, json } from '@sveltejs/kit';
 import * as tables from '$lib/server/db/schema.js';
+import { habit, habitInstance } from '$lib/server/db/schema.js';
 import { z } from 'zod';
-import { eq } from 'drizzle-orm';
+import { and, eq, gte, or, sql } from 'drizzle-orm';
+import { lte } from 'drizzle-orm';
 
 // Create a new Habit
 const habitsPostSchema = z.object({
@@ -11,6 +13,7 @@ const habitsPostSchema = z.object({
 	count: z.number(),
 	frequency: z.enum(['daily', 'weekly', 'monthly'])
 });
+export type HabitsPostSchema = z.infer<typeof habitsPostSchema>;
 
 export const POST = async ({ locals, request }) => {
 	if (!locals.session || !locals.user) {
@@ -26,6 +29,7 @@ export const POST = async ({ locals, request }) => {
 			userId: locals.user.id,
 			...body.data
 		})
+		.returning()
 		.execute();
 
 	return json({ resp });
@@ -39,6 +43,7 @@ const habitsPatchSchema = z.object({
 	count: z.number().optional(),
 	frequency: z.enum(['daily', 'weekly', 'monthly']).optional()
 });
+export type HabitsPatchSchema = z.infer<typeof habitsPatchSchema>;
 
 export const PATCH = async ({ locals, request }) => {
 	if (!locals.session || !locals.user) {
@@ -52,6 +57,7 @@ export const PATCH = async ({ locals, request }) => {
 		.update(tables.habit)
 		.set(body.data)
 		.where(eq(tables.habit.id, body.data.id))
+		.returning()
 		.execute();
 
 	return json({ resp });
@@ -61,6 +67,7 @@ export const PATCH = async ({ locals, request }) => {
 const habitsDeleteSchema = z.object({
 	id: z.number()
 });
+export type HabitsDeleteSchema = z.infer<typeof habitsDeleteSchema>;
 
 export const DELETE = async ({ locals, request }) => {
 	if (!locals.session || !locals.user) {
@@ -81,29 +88,19 @@ export const DELETE = async ({ locals, request }) => {
 	return json({ success: true });
 };
 
-// Put new habit instance
-const habitInstancePutSchema = z.object({
-  habitId: z.number(),
-  date: z.string()
-});
 
-export const PUT = async ({ locals, request }) => {
-  if (!locals.session || !locals.user) {
-    return error(401, 'Unauthorized');
-  }
-  const body = habitInstancePutSchema.safeParse(await request.json());
-  if (!body.success) {
-    return error(400, body.error);
-  }
-  const resp = await db
-    .insert(tables.habitInstance)
-    .values({
-      habitId: body.data.habitId,
-      date: new Date(body.data.date)
-    })
-    .execute();
-
-  return json({ resp });
+export type HabitWithInstances = {
+	habitId: number;
+	habitName: string;
+	habitDescription: string | null;
+	habitFrequency: 'daily' | 'weekly' | 'monthly';
+	habitCount: number;
+	instanceCount: number;
+	instances: Array<{
+		id: number;
+		habitId: number;
+		date: Date;
+	}>;
 };
 
 // Get all Habits and their HabitInstances
@@ -111,11 +108,58 @@ export const GET = async ({ locals }) => {
 	if (!locals.session || !locals.user) {
 		return error(401, 'Unauthorized');
 	}
-	const habits = await db.query.habit.findMany({
-		where: (habit, { eq }) => eq(habit.userId, locals.user!.id),
-		with: {
-			habitInstances: true
-		}
-	});
-	return json({ habits });
+	// const habits = await db.query.tables.habit.findMany({
+	// 	where: (tables.habit, { eq }) => eq(tables.habit.userId, locals.user!.id),
+	// 	with: {
+	// 		habitInstances: true
+	// 	}
+	// });
+
+	// Precalculate the day, week, and month dates
+	const now = new Date();
+	// Create separate Date objects for each start point
+	const startOfDay = new Date(now);
+	startOfDay.setHours(0, 0, 0, 0);
+
+	const startOfWeek = new Date(now);
+	startOfWeek.setDate(now.getDate() - now.getDay());
+	startOfWeek.setHours(0, 0, 0, 0);
+
+	const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+	startOfMonth.setHours(0, 0, 0, 0);
+	// Define the query
+	const query = db
+		.select({
+			habitId: habit.id,
+			habitName: habit.name,
+			habitDescription: habit.description,
+			habitFrequency: habit.frequency,
+			habitCount: habit.count,
+			instanceCount: sql<number>`COUNT(${habitInstance.id})`.as('instance_count'),
+			instances: sql`JSON_AGG(${habitInstance})`.as('instances')
+		})
+		.from(habit)
+		.leftJoin(
+			habitInstance,
+			and(
+				eq(habitInstance.habitId, habit.id),
+				// Filter instances based on frequency
+				sql`CASE 
+			  WHEN ${habit.frequency} = 'daily' THEN DATE(${habitInstance.date}) >= DATE(${startOfDay})
+			  WHEN ${habit.frequency} = 'weekly' THEN DATE(${habitInstance.date}) >= DATE(${startOfWeek})
+			  WHEN ${habit.frequency} = 'monthly' THEN DATE(${habitInstance.date}) >= DATE(${startOfMonth})
+			END`
+			)
+		)
+		.groupBy(habit.id, habit.name, habit.description, habit.frequency, habit.count)
+		.orderBy(habit.id);
+
+	// Execute the query
+	const result = await query.execute() as HabitWithInstances[];
+	// Filter out null values from the `instances` arrays
+	const filteredResult = result.map((row) => ({
+		...row,
+		instances: row.instances.filter((instance) => instance !== null),
+	})) as HabitWithInstances[];
+	return json({ result: filteredResult });
 };

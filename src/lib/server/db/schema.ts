@@ -66,7 +66,7 @@ export const frequency = pgEnum('frequency', ['daily', 'weekly', 'monthly']);
 export const habit = pgTable('habit', {
 	id: serial('id').primaryKey(),
 	userId: text('user_id')
-		.references(() => user.id)
+		.references(() => user.id, { onDelete: 'cascade', onUpdate: 'cascade' })
 		.notNull(),
 	name: text('name').notNull(),
 	description: text('description'),
@@ -77,7 +77,7 @@ export const habit = pgTable('habit', {
 export const habitInstance = pgTable('habit_instance', {
 	id: serial('id').primaryKey(),
 	habitId: integer('habit_id')
-		.references(() => habit.id)
+		.references(() => habit.id, { onDelete: 'cascade', onUpdate: 'cascade' })
 		.notNull(),
 	date: timestamp('date').notNull()
 });
