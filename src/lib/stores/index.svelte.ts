@@ -12,7 +12,7 @@ export class PageState {
 	});
 	isAnythingBackgroundUpdating = $state(false);
 	constructor() {
-		$inspect("IS ANYTHING BACKGROUND UPDATING", this.isAnythingBackgroundUpdating);
+		// $inspect("IS ANYTHING BACKGROUND UPDATING", this.isAnythingBackgroundUpdating);
 		$effect(() => {
 			const eventHandler = (event: BeforeUnloadEvent) => {
 				event.preventDefault();
