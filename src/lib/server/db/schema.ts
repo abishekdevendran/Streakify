@@ -71,7 +71,8 @@ export const habit = pgTable('habit', {
 	name: text('name').notNull(),
 	description: text('description'),
 	frequency: frequency('frequency').notNull(),
-	count: integer('count').notNull()
+	count: integer('count').notNull(),
+	metric: text('metric'),
 });
 
 export const habitInstance = pgTable('habit_instance', {

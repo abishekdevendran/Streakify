@@ -10,6 +10,7 @@ const habitsPostSchema = z.object({
 	name: z.string(),
 	description: z.string().optional(),
 	count: z.number(),
+	metric: z.string().nullable().optional(),
 	frequency: z.enum(['daily', 'weekly', 'monthly'])
 });
 export type HabitsPostSchema = z.infer<typeof habitsPostSchema>;
@@ -21,6 +22,9 @@ export const POST = async ({ locals, request }) => {
 	const body = habitsPostSchema.safeParse(await request.json());
 	if (!body.success) {
 		return error(400, body.error);
+	}
+	if(body.data.metric ===''){
+		body.data.metric = null
 	}
 	const resp = await db
 		.insert(tables.habit)
@@ -40,6 +44,7 @@ const habitsPatchSchema = z.object({
 	name: z.string().optional(),
 	description: z.string().optional(),
 	count: z.number().optional(),
+	metric: z.string().nullable().optional(),
 	frequency: z.enum(['daily', 'weekly', 'monthly']).optional()
 });
 export type HabitsPatchSchema = z.infer<typeof habitsPatchSchema>;
@@ -51,6 +56,9 @@ export const PATCH = async ({ locals, request }) => {
 	const body = habitsPatchSchema.safeParse(await request.json());
 	if (!body.success) {
 		return error(400, body.error);
+	}
+	if (body.data.metric === '') {
+		body.data.metric = null;
 	}
 	const resp = await db
 		.update(tables.habit)
@@ -96,6 +104,7 @@ export type HabitWithInstances = {
 	habitDescription: string | null;
 	habitFrequency: 'daily' | 'weekly' | 'monthly';
 	habitCount: number;
+	habitMetric: string | null;
 	instanceCount: number;
 	instances: Array<{
 		id: number;
@@ -136,6 +145,7 @@ export const GET = async ({ locals }) => {
 			habitDescription: habit.description,
 			habitFrequency: habit.frequency,
 			habitCount: habit.count,
+			habitMetric: habit.metric,
 			instanceCount: sql<number>`COUNT(${habitInstance.id})`.as('instance_count'),
 			instances: sql`JSON_AGG(${habitInstance})`.as('instances')
 		})

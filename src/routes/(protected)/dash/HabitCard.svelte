@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MinusIcon, PlusIcon, Trash2 } from 'lucide-svelte';
+	import { MinusIcon, PlusIcon } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import deleteHabitInstance from '$lib/fetchers/habits/deleteInstance';
 	import { getPageState } from '$lib/stores/index.svelte';
@@ -7,6 +7,8 @@
 	import insertHabitInstance from '$lib/fetchers/habits/insertInstance';
 	import type { HabitWithInstances } from '../../api/v1/habits/+server';
 	import DeleteHabit from './DeleteHabit.svelte';
+	import DialogOrDrawer from './DialogOrDrawer.svelte';
+	import HabitUpdater from './HabitUpdater.svelte';
 
 	let {
 		habit = $bindable()
@@ -52,12 +54,30 @@
 			pageState.isAnythingBackgroundUpdating = false;
 		}
 	};
+
+	let open = $state(false);
 </script>
 
-<div class="text-xl font-semibold whitespace-nowrap overflow-hidden text-ellipsis">{habit.habitName}</div>
+<DialogOrDrawer
+	bind:open
+	title={habit.habitName}
+	description={habit.habitDescription ?? 'A healthy habit!'}
+>
+	{#snippet trigger(triggerProps)}
+		<Button
+			variant="ghost"
+			{...triggerProps}
+			class="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-semibold"
+			>{habit.habitName}</Button
+		>
+	{/snippet}
+	{#snippet children()}
+		<HabitUpdater {habit} />
+	{/snippet}
+</DialogOrDrawer>
 <div class="flex gap-2 max-md:flex-col md:gap-4">
 	<!-- Progress count -->
-	<div class="text-center whitespace-nowrap">
+	<div class="whitespace-nowrap text-center">
 		<span class="text-2xl font-bold">{habit.instances.length}</span>
 		<span class="text-muted-foreground">/{habit.habitCount}</span>
 	</div>

@@ -21,14 +21,15 @@
 	let name: string = $state('');
 	let description: string = $state('');
 	let frequency: 'daily' | 'weekly' | 'monthly' = $state('daily');
+	let metric: string = $state('');
 	let count: number = $state(1);
 	let isSubmitted: boolean = $state(false);
 	let isSubmitting: boolean = $state(false);
 
 	const frequencies = [
-		{ value: 'daily', label: 'Daily' },
-		{ value: 'weekly', label: 'Weekly' },
-		{ value: 'monthly', label: 'Monthly' }
+		{ value: 'daily', label: 'Daily', unit: 'day' },
+		{ value: 'weekly', label: 'Weekly', unit: 'week' },
+		{ value: 'monthly', label: 'Monthly', unit: 'month' }
 	];
 
 	// Form submission
@@ -43,7 +44,8 @@
 				name: name,
 				description: description,
 				frequency: frequency,
-				count: count
+				count: count,
+				metric: metric
 			}
 			const resp = await createHabit(body);
 			isSubmitted = true;
@@ -116,13 +118,14 @@
 			</Label>
 			<div class="flex items-center gap-4">
 				<Input type="number" min="1" bind:value={count} required class="w-32" />
+				<Input type="text" bind:value={metric} class="w-32" placeholder="times" /> 
 				<TooltipProvider>
 					<Tooltip>
 						<TooltipTrigger>
-							<span class="text-sm text-muted-foreground">times {frequency}</span>
+							<span class="text-sm text-muted-foreground">{frequency}</span>
 						</TooltipTrigger>
 						<TooltipContent>
-							<p>How many times you want to do this {frequency}</p>
+							<p>{count} {metric ?? 'time(s)'} per {frequencies.find((f) => f.value === frequency)?.unit}</p>
 						</TooltipContent>
 					</Tooltip>
 				</TooltipProvider>
