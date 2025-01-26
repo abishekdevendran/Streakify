@@ -34,7 +34,7 @@
 			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
 				{#each dailyHabits as habit (habit.habitId)}
 					<div
-						class="flex w-full items-center justify-between gap-2 rounded-xl border-2 p-2 max-md:flex-col md:pl-4"
+						class="flex w-full items-center justify-between gap-2 rounded-xl border-2 p-2 max-md:flex-col md:pl-2"
 						in:receive={{ key: habit.habitId }}
 						out:send={{ key: habit.habitId }}
 						animate:flip={{ duration: 200 }}
@@ -52,7 +52,7 @@
 			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
 				{#each weeklyHabits as habit (habit.habitId)}
 					<div
-						class="flex w-full items-center justify-between gap-2 rounded-xl border-2 p-2 max-md:flex-col md:pl-4"
+						class="flex w-full items-center justify-between gap-2 rounded-xl border-2 p-2 max-md:flex-col md:pl-2"
 						in:receive={{ key: habit.habitId }}
 						out:send={{ key: habit.habitId }}
 						animate:flip={{ duration: 200 }}
@@ -70,7 +70,7 @@
 			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
 				{#each monthlyHabits as habit (habit.habitId)}
 					<div
-						class="flex w-full items-center justify-between gap-2 rounded-xl border-2 p-2 max-md:flex-col md:pl-4"
+						class="flex w-full items-center justify-between gap-2 rounded-xl border-2 p-2 max-md:flex-col md:pl-2"
 						in:receive={{ key: habit.habitId }}
 						out:send={{ key: habit.habitId }}
 						animate:flip={{ duration: 200 }}
@@ -88,7 +88,7 @@
 			<div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
 				{#each upcomingHabits as habit (habit.habitId)}
 					<div
-						class="flex w-full items-center justify-between gap-2 rounded-xl border-2 p-2 max-md:flex-col md:pl-4"
+						class="flex w-full items-center justify-between gap-2 rounded-xl border-2 p-2 max-md:flex-col md:pl-2"
 						in:receive={{ key: habit.habitId }}
 						out:send={{ key: habit.habitId }}
 						animate:flip={{ duration: 200 }}

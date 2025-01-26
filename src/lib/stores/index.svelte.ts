@@ -18,11 +18,11 @@ export class PageState {
 				event.preventDefault();
 			}
 			if (browser && this.isAnythingBackgroundUpdating) {
-				console.log('Preventing unload');
+				// console.log('Preventing unload');
 				window.addEventListener('beforeunload', eventHandler)
 			}
 			return () => {
-				console.log('Allowing unload');
+				// console.log('Allowing unload');
 				window.removeEventListener('beforeunload', eventHandler)
 			}
 		})

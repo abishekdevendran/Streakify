@@ -9,6 +9,7 @@
 	import DeleteHabit from './DeleteHabit.svelte';
 	import DialogOrDrawer from './DialogOrDrawer.svelte';
 	import HabitUpdater from './HabitUpdater.svelte';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
 	let {
 		habit = $bindable()
@@ -66,15 +67,19 @@
 	{#snippet trigger(triggerProps)}
 		<Button
 			variant="ghost"
+			class="grow justify-start overflow-hidden text-ellipsis whitespace-nowrap p-2 text-start text-xl font-semibold"
 			{...triggerProps}
-			class="overflow-hidden text-ellipsis whitespace-nowrap text-xl font-semibold"
-			>{habit.habitName}</Button
 		>
+			<div class="w-full overflow-hidden text-ellipsis whitespace-nowrap">
+				{habit.habitName}
+			</div>
+		</Button>
 	{/snippet}
 	{#snippet children()}
 		<HabitUpdater {habit} />
 	{/snippet}
 </DialogOrDrawer>
+
 <div class="flex gap-2 max-md:flex-col md:gap-4">
 	<!-- Progress count -->
 	<div class="whitespace-nowrap text-center">
@@ -84,17 +89,37 @@
 
 	<!-- Control buttons -->
 	<div class="flex items-center justify-center gap-2">
-		<Button
-			variant="outline"
-			size="icon"
-			onclick={decrementCount}
-			disabled={habit.instances.length === 0 || habit.instances.at(-1)!.id < 0}
-		>
-			<MinusIcon class="size-4" />
-		</Button>
-		<Button variant="outline" size="icon" onclick={incrementCount}>
-			<PlusIcon class="size-4" />
-		</Button>
+		<Tooltip.Provider>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					{#snippet child({ props: tooltipProps })}
+						<div {...tooltipProps}>
+							<Button
+								variant="outline"
+								size="icon"
+								onclick={decrementCount}
+								disabled={habit.instances.length === 0 || habit.instances.at(-1)!.id < 0}
+							>
+								<MinusIcon class="size-4" />
+							</Button>
+						</div>
+					{/snippet}
+				</Tooltip.Trigger>
+				<Tooltip.Content>Decrease Count</Tooltip.Content>
+			</Tooltip.Root>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					{#snippet child({ props: tooltipProps })}
+						<div {...tooltipProps}>
+							<Button variant="outline" size="icon" onclick={incrementCount}>
+								<PlusIcon class="size-4" />
+							</Button>
+						</div>
+					{/snippet}
+				</Tooltip.Trigger>
+				<Tooltip.Content>Increase Count</Tooltip.Content>
+			</Tooltip.Root>
+		</Tooltip.Provider>
 		<DeleteHabit habitId={habit.habitId} />
 	</div>
 </div>

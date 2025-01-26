@@ -5,6 +5,7 @@
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import { Button } from '$lib/components/ui/button';
 	import DialogOrDrawer from './DialogOrDrawer.svelte';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 	let {
 		imgSrc,
 		alt
@@ -61,6 +62,17 @@
 		<Button disabled={isLoading} variant="destructive" onclick={handleLogout}>Logout</Button>
 	{/snippet}
 	{#snippet trigger(triggerProps)}
-		{@render UserAvatar(triggerProps, imgSrc, alt)}
+		<Tooltip.Provider>
+			<Tooltip.Root>
+				<Tooltip.Trigger>
+					{#snippet child({ props: tooltipProps })}
+						<div {...tooltipProps}>
+							{@render UserAvatar(triggerProps, imgSrc, alt)}
+						</div>
+					{/snippet}
+				</Tooltip.Trigger>
+				<Tooltip.Content>Logout</Tooltip.Content>
+			</Tooltip.Root>
+		</Tooltip.Provider>
 	{/snippet}
 </DialogOrDrawer>
