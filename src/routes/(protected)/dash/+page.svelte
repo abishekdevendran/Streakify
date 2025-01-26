@@ -28,12 +28,6 @@
 
 <Header imgSrc={data.user.image ?? undefined} alt={data.user.name} />
 <div class="container">
-	<!-- {#each habits as habit, idx}
-		<HabitCard bind:habit={habits[idx]} />
-	{/each} -->
-	<!-- {#each data.habits as habit}
-		{JSON.stringify(habit, null, 2)}
-	{/each} -->
 	{#if dailyHabits.length > 0}
 		<div class="flex w-full flex-col gap-2 pt-2">
 			<div class="text-2xl font-semibold transition-all duration-300">Daily Habits</div>
@@ -108,3 +102,12 @@
 </div>
 
 <HabitCreatorWrapper />
+{#if !habits?.length}
+<div class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-2 opacity-45 pointer-events-none">
+	<div class="text-2xl font-semibold">No habits found</div>
+	<div class="flex gap-2 whitespace-pre-line text-center">
+		Let's create one!
+		Start by clicking the button at the bottom right of the page!
+	</div>
+</div>
+{/if}

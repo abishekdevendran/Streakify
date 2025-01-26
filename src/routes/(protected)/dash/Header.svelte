@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { getPageState } from '$lib/stores/index.svelte';
-	import { CalendarCheck } from 'lucide-svelte';
+	import { CalendarCheck, CircleCheck } from 'lucide-svelte';
 	import LoadingSpinner from './LoadingSpinner.svelte';
 	import ThemeDropDown from './ThemeDropDown.svelte';
 	import Avatar from './Logout.svelte';
+	import { scale } from 'svelte/transition';
 	const pageState = getPageState();
 	let wasRecentlyUpdated = $state(false);
 	let timeoutId = -1;
@@ -34,11 +35,18 @@
 	<div class="flex w-full items-center justify-between">
 		<h2 class="text-3xl font-extrabold">Streakify</h2>
 		<div class="flex items-center justify-center gap-2 py-2">
-			{#if pageState.isAnythingBackgroundUpdating}
-				<LoadingSpinner />
-			{:else if wasRecentlyUpdated}
-				<CalendarCheck />
+			<div class="grid">
+
+				{#if pageState.isAnythingBackgroundUpdating}
+				<div in:scale out:scale class="col-span-full row-span-full">
+					<LoadingSpinner />
+				</div>
+				{:else if wasRecentlyUpdated}
+				<div in:scale out:scale class="col-span-full row-span-full">
+					<CircleCheck />
+				</div>
 			{/if}
+		</div>
 			<ThemeDropDown />
 			<Avatar {imgSrc} {alt} />
 		</div>

@@ -3,7 +3,7 @@ import type { HabitsPostSchema } from "../../../routes/api/v1/habits/+server"
 
 export default async function createHabit(body: HabitsPostSchema) {
     const res = await fetch(`/api/${PUBLIC_API_VERSION}/habits`, {
-        method: 'DELETE',
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },

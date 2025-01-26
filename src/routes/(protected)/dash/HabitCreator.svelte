@@ -72,7 +72,7 @@
 		</Button>
 	</div>
 {:else}
-	<form onsubmit={handleSubmit} class="space-y-6" transition:slide>
+	<form onsubmit={handleSubmit} class="space-y-6 px-4" transition:slide>
 		<!-- Habit Name -->
 		<div class="space-y-2">
 			<Label class="flex items-center gap-2">
