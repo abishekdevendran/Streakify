@@ -1,38 +1,103 @@
-# sv
+# Streakify - Habit Tracker
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Streakify is a habit-tracking application designed to help users build and maintain positive habits. Built in under a week as part of the Chingu Solo Developer Project (Tier 3), Streakify demonstrates intermediate to advanced web development skills, including frontend and backend separation, API design, and database integration.
 
-## Creating a project
+Visit the live app: [Streakify](https://thestreakify.vercel.app/)
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Features
 
-```bash
-# create a new project in the current directory
-npx sv create
+- Habit Tracking: Users can create, update, and delete habits.
+- Streak Management: Track your progress and maintain streaks for each habit.
+- Authentication: Secure login via GitHub OAuth.
+- RESTful API: Backend implements CRUD operations for habits and habit instances.
+- Database Integration: PostgreSQL for data storage and Redis for session management.
+- Responsive Design: Built with SvelteKit and TailwindCSS for a seamless user experience.
 
-# create a new project in my-app
-npx sv create my-app
-```
+## Stack
 
-## Developing
+### Frontend
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+- SvelteKit: A modern framework for building fast and reactive web applications.
+- TailwindCSS: Utility-first CSS framework for styling.
+- Lucide Icons: Beautiful and customizable icons.
+- Svelte Sonner: Toast notifications for user feedback.
 
-```bash
-npm run dev
+### Backend
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+- Drizzle ORM: TypeScript ORM for interacting with PostgreSQL.
+- Better Auth: Authentication library for handling user sessions.
+- Redis: Session management and caching.
+- Zod: Schema validation for API requests.
 
-## Building
+### Deployment
 
-To create a production version of your app:
+- Vercel: Hosting for the frontend and backend.
+- Neon: Serverless PostgreSQL database.
+- Upstash: Serverless Redis for session management.
 
-```bash
-npm run build
-```
+## Project Structure
 
-You can preview the production build with `npm run preview`.
+The project follows the Separation of Concerns principle, with distinct files for frontend and backend logic.
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+streakify/
+├── src/
+│   ├── lib/
+│   │   ├── server/
+│   │   │   ├── db/            # Database schema and queries
+│   │   │   ├── auth/          # Authentication logic
+│   │   │   └── api/           # API endpoints
+│   ├── routes/                # SvelteKit routes
+│   └── app.html               # Main HTML template
+├── drizzle.config.ts          # Drizzle ORM configuration
+├── package.json               # Project dependencies and scripts
+└── README.md                  # This file
+
+## Setup and Installation
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/your-username/streakify.git
+    cd streakify
+    ```
+
+2. Install dependencies:
+    ```bash
+    pnpm install
+    ```
+
+3. Set Up Environment Variables:
+    Create a .env file in the root directory and add the variables listed in .env.example.
+
+4. Run db migrations:
+    ```bash
+    pnpm db:push
+    OR
+    pnpm db:generate && pnpm db:migrate
+    ```
+
+5. Start the development server:
+    ```bash
+    pnpm dev
+    ```
+
+## Chingu Solo Developer Project (Tier 3)
+
+This project was built to satisfy the requirements for the Tier 3 Solo Developer Project for Chingu. The criteria included:
+
+- Separation of frontend and backend logic.
+- Implementation of a custom backend API.
+- Use of a database (PostgreSQL) accessed only from the backend.
+- CRUD operations for habit management.
+- Advanced use of tools like SvelteKit, Drizzle ORM, and Redis.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Chingu](https://www.chingu.io/): For providing the opportunity to work on this project.
+- SvelteKit and Drizzle ORM: For their excellent frameworks and tools.
+- TailwindCSS: For its utility-first CSS framework.
+
+Happy habit tracking with Streakify! 🚀
