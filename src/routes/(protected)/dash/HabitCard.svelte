@@ -61,14 +61,14 @@
 </script>
 
 {#if habit.habitCurrentStreak > 0}
-	<Badge class="rounded-full flex items-center justify-center text-xs p-1 px-2 absolute bottom-0 right-0 translate-y-3/4 w-24 pointer-events-none">
+	<Badge class="rounded-full flex items-center justify-center text-xs p-1 px-2 absolute bottom-1/2 translate-y-1/2 md:bottom-0 md:right-0 right-1 md:translate-y-3/4 w-24 pointer-events-none z-10">
 		<Flame size="14" />
 		Current: {habit.habitCurrentStreak}
 	</Badge>
 {/if}
 
 {#if habit.habitLongestStreak > 0}
-	<Badge class="rounded-full flex items-center justify-center text-xs p-1 px-2 absolute bottom-0 left-0 translate-y-3/4 w-24 pointer-events-none" variant="secondary">
+	<Badge class="rounded-full flex items-center justify-center text-xs p-1 px-2 absolute bottom-1/2 translate-y-1/2 md:bottom-0 md:left-0 left-1 md:translate-y-3/4 w-24 pointer-events-none z-10" variant="secondary">
 		<Flame size="14" />
 		Longest: {habit.habitLongestStreak}
 	</Badge>

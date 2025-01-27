@@ -47,7 +47,7 @@
 	};
 </script>
 
-<div class="flex h-screen w-full items-center justify-center px-4">
+<div class="flex h-[100dvh] w-full items-center justify-center px-4">
 	<Card.Root class="mx-auto max-w-sm">
 		<Card.Header>
 			<Card.Title class="text-2xl">Login</Card.Title>
@@ -76,7 +76,7 @@
 							bind:value={password}
 							type={passwordVisible ? 'text' : 'password'}
 							required
-							autocomplete="new-password"
+							autocomplete="current-password"
 						/>
 						{#if passwordVisible}
 							<Eye
