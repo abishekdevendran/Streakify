@@ -4,6 +4,9 @@ Streakify is a habit-tracking application designed to help users build and maint
 
 Visit the live app: [Streakify](https://thestreakify.vercel.app/)
 
+![image](https://github.com/user-attachments/assets/9b08c050-98fc-41d9-90cb-78460644cebe)
+
+
 ## Features
 
 - Habit Tracking: Users can create, update, and delete habits.
