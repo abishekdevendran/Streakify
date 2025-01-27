@@ -117,8 +117,6 @@ export const DELETE = async ({ locals, request }) => {
 	const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 	startOfMonth.setHours(0, 0, 0, 0);
 
-	console.log(startOfDay, startOfWeek, startOfMonth, habitInstanceId);
-
 	// Get habit id
 	const habitId = (await db.query.habitInstance.findFirst({
 		where: (habitInstance, { eq }) => eq(habitInstance.id, habitInstanceId),
@@ -157,7 +155,6 @@ export const DELETE = async ({ locals, request }) => {
 
 	// if resp.count == resp.completion, then the streak needs to be recalculated
 	if (resp.count === resp.completion) {
-		console.log(resp);
 		await db
 			.update(habit)
 			.set({

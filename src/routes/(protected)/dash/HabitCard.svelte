@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { MinusIcon, PlusIcon } from 'lucide-svelte';
+	import { Flame, MinusIcon, PlusIcon } from 'lucide-svelte';
 	import { Button } from '$lib/components/ui/button';
 	import deleteHabitInstance from '$lib/fetchers/habits/deleteInstance';
 	import { getPageState } from '$lib/stores/index.svelte';
@@ -10,6 +10,7 @@
 	import DialogOrDrawer from './DialogOrDrawer.svelte';
 	import HabitUpdater from './HabitUpdater.svelte';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import { Badge } from '$lib/components/ui/badge';
 
 	let {
 		habit = $bindable()
@@ -58,6 +59,20 @@
 
 	let open = $state(false);
 </script>
+
+{#if habit.habitCurrentStreak > 0}
+	<Badge class="rounded-full flex items-center justify-center text-xs p-1 px-2 absolute bottom-0 right-0 translate-y-3/4 w-24 pointer-events-none">
+		<Flame size="14" />
+		Current: {habit.habitCurrentStreak}
+	</Badge>
+{/if}
+
+{#if habit.habitLongestStreak > 0}
+	<Badge class="rounded-full flex items-center justify-center text-xs p-1 px-2 absolute bottom-0 left-0 translate-y-3/4 w-24 pointer-events-none" variant="secondary">
+		<Flame size="14" />
+		Longest: {habit.habitLongestStreak}
+	</Badge>
+{/if}
 
 <DialogOrDrawer
 	bind:open

@@ -105,6 +105,9 @@ export type HabitWithInstances = {
 	habitFrequency: 'daily' | 'weekly' | 'monthly';
 	habitCount: number;
 	habitMetric: string | null;
+	habitLongestStreak: number;
+	habitCurrentStreak: number;
+	habitIsCurrStreak: boolean;
 	instanceCount: number;
 	instances: Array<{
 		id: number;
@@ -118,12 +121,6 @@ export const GET = async ({ locals }) => {
 	if (!locals.session || !locals.user) {
 		return error(401, 'Unauthorized');
 	}
-	// const habits = await db.query.tables.habit.findMany({
-	// 	where: (tables.habit, { eq }) => eq(tables.habit.userId, locals.user!.id),
-	// 	with: {
-	// 		habitInstances: true
-	// 	}
-	// });
 
 	// Precalculate the day, week, and month dates
 	const now = new Date();
@@ -147,7 +144,10 @@ export const GET = async ({ locals }) => {
 			habitFrequency: habit.frequency,
 			habitCount: habit.count,
 			habitMetric: habit.metric,
-			instanceCount: sql<number>`COUNT(${habitInstance.id})`.as('instance_count'),
+			habitLongestStreak: habit.longestStreak,
+			habitCurrentStreak: habit.currentStreak,
+			habitIsCurrStreak: habit.isCurrStreak,
+			instanceCount: sql<number>`COUNT(${habitInstance.id})`.mapWith(Number).as('instance_count'),
 			instances: sql`JSON_AGG(${habitInstance})`.as('instances')
 		})
 		.from(habit)
