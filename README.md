@@ -42,6 +42,7 @@ Visit the live app: [Streakify](https://thestreakify.vercel.app/)
 
 The project follows the Separation of Concerns principle, with distinct files for frontend and backend logic.
 
+```bash
 streakify/
 ├── src/
 │   ├── lib/
@@ -54,6 +55,7 @@ streakify/
 ├── drizzle.config.ts          # Drizzle ORM configuration
 ├── package.json               # Project dependencies and scripts
 └── README.md                  # This file
+```
 
 ## Setup and Installation
 
