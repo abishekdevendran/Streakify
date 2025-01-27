@@ -131,8 +131,9 @@ export const GET = async ({ locals }) => {
 	const startOfDay = new Date(now);
 	startOfDay.setHours(0, 0, 0, 0);
 
+	// Calculate the start of the week (Monday)
 	const startOfWeek = new Date(now);
-	startOfWeek.setDate(now.getDate() - now.getDay());
+	startOfWeek.setDate(now.getDate() - (now.getDay() === 0 ? 6 : now.getDay() - 1)); // Adjust for Monday as the first day
 	startOfWeek.setHours(0, 0, 0, 0);
 
 	const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
