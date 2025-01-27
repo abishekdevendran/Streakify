@@ -7,7 +7,8 @@ import {
 	boolean,
 	serial,
 	pgEnum,
-	json
+	json,
+	uniqueIndex
 } from 'drizzle-orm/pg-core';
 
 export const user = pgTable('user', {
@@ -73,6 +74,9 @@ export const habit = pgTable('habit', {
 	frequency: frequency('frequency').notNull(),
 	count: integer('count').notNull(),
 	metric: text('metric'),
+	isCurrStreak: boolean('is_curr_streak').notNull().default(false),
+	longestStreak: integer('longest_streak').notNull().default(0),
+	currentStreak: integer('current_streak').notNull().default(0),
 });
 
 export const habitInstance = pgTable('habit_instance', {
@@ -81,7 +85,10 @@ export const habitInstance = pgTable('habit_instance', {
 		.references(() => habit.id, { onDelete: 'cascade', onUpdate: 'cascade' })
 		.notNull(),
 	date: timestamp('date').notNull()
-});
+}, (t)=>[{
+	idx_habit_date: uniqueIndex('idx_habit_date').on(t.habitId, t.date),
+	idx_compund_habit_date: uniqueIndex('idx_compund_habit_date').on(t.date, t.habitId),
+}]);
 
 // relations
 export const userRelations = relations(user, ({ one, many }) => ({
@@ -111,7 +118,8 @@ export const habitRelations = relations(habit, ({ one, many }) => ({
 		fields: [habit.userId],
 		references: [user.id]
 	}),
-	habitInstances: many(habitInstance)
+	habitInstances: many(habitInstance),
+	// streaks: many(streak)
 }));
 
 export const habitInstanceRelations = relations(habitInstance, ({ one, many }) => ({
@@ -120,6 +128,13 @@ export const habitInstanceRelations = relations(habitInstance, ({ one, many }) =
 		references: [habit.id]
 	})
 }));
+
+// export const streakRelations = relations(streak, ({ one, many }) => ({
+// 	habit: one(habit, {
+// 		fields: [streak.habitId],
+// 		references: [habit.id]
+// 	})
+// }));
 
 // types
 export type Habit = typeof habit.$inferSelect;
