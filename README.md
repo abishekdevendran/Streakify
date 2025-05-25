@@ -105,4 +105,4 @@ This project is licensed under the GPL License. See the [LICENSE](LICENSE) file 
 - SvelteKit and Drizzle ORM: For their excellent frameworks and tools.
 - TailwindCSS: For its utility-first CSS framework.
 
-Happy habit tracking with Streakify! Fin. 🚀
+Happy habit tracking with Streakify! 🚀
